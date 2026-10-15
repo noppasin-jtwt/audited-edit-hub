@@ -34,10 +34,10 @@ export const login = createServerFn({ method: "POST" })
 export const getDashboard = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object(tok).parse(d))
   .handler(async ({ data }) => {
-    const { backend, demo } = await ctx(data.token);
+    const { backend, demo, user } = await ctx(data.token);
     const tables = await Promise.all(TABLE_KEYS.map(async (t) => {
       const rows = await backend.list(t);
-      await backend.addAudit(audit({ user: (await ctx(data.token)).user.username, action: "VIEW", table: t }));
+      await backend.addAudit(audit({ user: user.username, action: "VIEW", table: t }));
       const last = rows.map((r) => r.ModifiedDate ?? r.CreatedDate).sort().pop() ?? null;
       return { table: t, rows, lastUpdate: last };
     }));
