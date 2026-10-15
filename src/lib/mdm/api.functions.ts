@@ -71,7 +71,7 @@ export const releaseLocks = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-const valuesZ = z.record(z.union([z.string(), z.number(), z.null()]));
+const valuesZ = z.record(z.string(), z.union([z.string(), z.number(), z.null()]));
 
 export const saveChanges = createServerFn({ method: "POST" })
   .inputValidator((d) => z.object({
@@ -92,10 +92,10 @@ export const saveChanges = createServerFn({ method: "POST" })
 
     data.updates.forEach((u, i) => {
       const before = byId.get(u.id);
-      if (!before) return errors.push(`Update ${i + 1}: record not found`);
+      if (!before) return void errors.push(`Update ${i + 1}: record not found`);
       const lock = locks.find((l) => l.id === u.id);
-      if (isLockedByOther(lock, user.uid)) return errors.push(`${before.model_code}: being edited by ${lock!.username}`);
-      if (data.source === "MANUAL" && !lock) return errors.push(`${before.model_code}: your edit lock expired, reopen the row`);
+      if (isLockedByOther(lock, user.uid)) return void errors.push(`${before.model_code}: being edited by ${lock!.username}`);
+      if (data.source === "MANUAL" && !lock) return void errors.push(`${before.model_code}: your edit lock expired, reopen the row`);
       const vals = { ...normalizeValues(t, { ...before, ...u.values }) };
       finalCodes.set(u.id, String(vals.model_code ?? "").toLowerCase());
       planned.push({ kind: "u", before, row: { ...before, ...vals, ModifiedBy: user.username, ModifiedDate: now } });

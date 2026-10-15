@@ -131,14 +131,14 @@ function EditGrid({ table }: { table: TableKey }) {
         const v = normalizeValues(table, r) as Vals;
         const code = String(v.model_code ?? "").toLowerCase();
         const line = `Row ${i + 2}`;
-        if (seen.has(code)) return plan.errors.push(`${line}: duplicate model_code in file`);
+        if (seen.has(code)) return void plan.errors.push(`${line}: duplicate model_code in file`);
         seen.add(code);
         const existing = byCode.get(code);
         const others = new Set([...byCode.keys()].filter((c) => c !== code));
         const errs = validateRow(table, v, others);
-        if (errs.length) return plan.errors.push(`${line}: ${errs.join(", ")}`);
+        if (errs.length) return void plan.errors.push(`${line}: ${errs.join(", ")}`);
         if (existing) {
-          if (isLockedByOther(locks.find((l) => l.id === existing.id), user!.uid)) return plan.errors.push(`${line}: ${existing.model_code} is being edited by another user`);
+          if (isLockedByOther(locks.find((l) => l.id === existing.id), user!.uid)) return void plan.errors.push(`${line}: ${existing.model_code} is being edited by another user`);
           plan.updates.push({ id: existing.id, values: v });
         } else plan.inserts.push(v);
       });

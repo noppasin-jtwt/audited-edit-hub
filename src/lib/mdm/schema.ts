@@ -47,7 +47,7 @@ export interface MasterRow {
   CreatedDate: string;
   ModifiedBy: string | null;
   ModifiedDate: string | null;
-  [k: string]: unknown;
+  [k: string]: string | number | null;
 }
 export const META_COLS = ["status", "CreatedBy", "CreatedDate", "ModifiedBy", "ModifiedDate"] as const;
 
@@ -63,8 +63,8 @@ export const INACTIVITY_MS = 15 * 60 * 1000;
 
 export interface Change {
   field: string;
-  old: unknown;
-  new: unknown;
+  old: string | number | null;
+  new: string | number | null;
 }
 export type AuditAction = "VIEW" | "INSERT" | "UPDATE" | "DELETE" | "LOGIN";
 export interface AuditEntry {
@@ -76,7 +76,7 @@ export interface AuditEntry {
   recordId?: string;
   recordCode?: string;
   changes?: Change[];
-  note?: string;
+  note?: string | undefined;
 }
 
 export const canEdit = (role: Role) => role === "EDITOR";
@@ -88,7 +88,7 @@ export function isLockedByOther(lock: Lock | undefined, userId: number, now = Da
 
 /** Converts raw form/Excel values to typed values for a table. */
 export function normalizeValues(table: TableKey, raw: Record<string, unknown>) {
-  const out: Record<string, unknown> = {};
+  const out: Record<string, string | number | null> = {};
   for (const c of TABLES[table].columns) {
     const v = raw[c.key];
     if (v === undefined || v === null || String(v).trim() === "") out[c.key] = null;
