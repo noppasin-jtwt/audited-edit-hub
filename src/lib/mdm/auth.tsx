@@ -1,3 +1,4 @@
+import type React from "react";
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from "react";
 import { INACTIVITY_MS, type Role } from "./schema";
 
@@ -10,7 +11,9 @@ interface AuthState {
   signIn: (token: string, user: ClientUser, demo: boolean) => void;
   signOut: () => void;
 }
-const Ctx = createContext<AuthState | null>(null);
+const g = globalThis as unknown as { __mdmAuthCtx?: React.Context<AuthState | null> };
+// Reuse one context across hot reloads so providers and consumers always match.
+const Ctx = (g.__mdmAuthCtx ??= createContext<AuthState | null>(null));
 const KEY = "mdm-session";
 
 export function AuthProvider({ children }: { children: ReactNode }) {

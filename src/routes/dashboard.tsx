@@ -28,7 +28,7 @@ export const Route = createFileRoute("/dashboard")({
   component: () => <AppShell><Dashboard /></AppShell>,
 });
 
-function Stat({ icon: I, label, value, sub }: { icon: typeof Database; label: string; value: string | number; sub?: string }) {
+function Stat({ icon: I, label, value, sub }: { icon: typeof Database; label: string; value: string | number; sub?: string | undefined }) {
   return (
     <div className="rounded-lg border bg-card p-4 shadow-sm">
       <div className="flex items-center justify-between text-xs font-medium uppercase tracking-wide text-muted-foreground">{label}<I className="size-4 text-primary" /></div>
