@@ -75,7 +75,7 @@ function EditGrid({ table }: { table: TableKey }) {
 
   async function startEdit(r: MasterRow) {
     const res = await lockFn({ data: { token: token!, table, id: r.id } });
-    if (!res.ok) return toast.error(`Locked — ${res.lockedBy} is editing ${r.model_code}`);
+    if (!res.ok) { toast.error(`Locked — ${res.lockedBy} is editing ${r.model_code}`); return; }
     setEdits((e) => ({ ...e, [r.id]: Object.fromEntries([...cols.map((c) => [c.key, (r[c.key] ?? null) as string | number | null]), ["status", r.status]]) }));
     qc.invalidateQueries({ queryKey: ["table", table] });
   }

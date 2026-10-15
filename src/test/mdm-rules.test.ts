@@ -19,7 +19,7 @@ describe("master data rules", () => {
     expect(errs).toContain("T_BOF must be a number");
   });
   it("records old and new values for changed fields", () => {
-    const before = { id: "1", model_code: "A", model_name: "n", T_BOF: 30, status: "ACTIVE" } as MasterRow;
+    const before = { id: "1", model_code: "A", model_name: "n", T_BOF: 30, status: "ACTIVE" } as unknown as MasterRow;
     expect(diffRow("HERUTU_S04", before, { ...before, T_BOF: 32, status: "INACTIVE" })).toEqual([
       { field: "T_BOF", old: 30, new: 32 },
       { field: "status", old: "ACTIVE", new: "INACTIVE" },

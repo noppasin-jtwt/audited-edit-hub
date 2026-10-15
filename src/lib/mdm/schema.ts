@@ -124,7 +124,7 @@ export function validateRow(
   return errors;
 }
 
-export function diffRow(table: TableKey, before: MasterRow, after: Record<string, unknown>): Change[] {
+export function diffRow(table: TableKey, before: MasterRow, after: Record<string, string | number | null>): Change[] {
   const keys = [...TABLES[table].columns.map((c) => c.key), "status"];
   return keys
     .filter((k) => k in after && (before[k] ?? null) !== (after[k] ?? null))
